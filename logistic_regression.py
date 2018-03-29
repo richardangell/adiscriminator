@@ -18,12 +18,13 @@ def sigmoid(z):
 def cost_function(theta, X, y):
     """Calculate the cost for given theta, X and y"""
     
-    m = y.shape[0]
+    m, n = X.shape
     
+    theta = theta.reshape((n, 1))
+        
     x_dot_theta = X.dot(theta)
-    
-    # value of the cost function
-    J = sum((-y * np.log(sigmoid(x_dot_theta))) - ((1 - y) * np.log(1 - sigmoid(x_dot_theta)))) / m
+
+    J = np.sum((-y * np.log(sigmoid(x_dot_theta))) - ((1 - y) * np.log(1 - sigmoid(x_dot_theta)))) / m
     
     return(J)
 
@@ -31,17 +32,13 @@ def cost_function(theta, X, y):
 def gradient(theta, X, y):
     """Calculate the gradient of the cost function w.r.t. each element of theta"""
     
-    m, n = y.shape
+    m, n = X.shape
     
-    grad = (X.T).dot(sigmoid(X.dot(theta)) - y)
+    theta = theta.reshape((n, 1))
     
-    return(grad)
+    grad = (X.T).dot(sigmoid(X.dot(theta)) - y) / m
+    
+    return(grad.flatten())
 
 
 
-
-Result = op.minimize(fun = cost_function, 
-                    x0 = initial_theta, 
-                    args = (X, y),
-                    method = 'TNC',
-                    jac = gradient)
