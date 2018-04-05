@@ -1,45 +1,83 @@
 import pandas as pd
+import numpy as np
 import os.path
 
 
 def get_data():
     
-    #file_path
+    file_path = 'adult.pkl'
     
-    #if os.path.exists(file_path)
-    
-    data_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data'
-    
-    data = pd.read_csv(data_url)
-    
-    data.columns = ['age',
-                    'workclass',
-                    'fnlwgt',
-                    'education',
-                    'education_num',
-                    'marital_status',
-                    'occupation',
-                    'relationship',
-                    'race',
-                    'sex',
-                    'capital_gain',
-                    'capital_loss',
-                    'hours_per_week',
-                    'native_country',
-                    'income']
-    
-    data['income'] = (data['income'] == ' <=50K') * 1
-    
+    if os.path.exists(file_path):
+
+        print('loading adult dataset from .pkl')
+
+        data = pd.read_pickle(file_path)
+
+    else:
+
+        print('downloading adult dataset from uci ml repository')
+
+        data_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data'
+        
+        data = pd.read_csv(data_url)
+        
+        data.columns = ['age',
+                        'workclass',
+                        'fnlwgt',
+                        'education',
+                        'education_num',
+                        'marital_status',
+                        'occupation',
+                        'relationship',
+                        'race',
+                        'sex',
+                        'capital_gain',
+                        'capital_loss',
+                        'hours_per_week',
+                        'native_country',
+                        'income']
+        
+        data['income'] = (data['income'] == ' <=50K') * 1
+
+        print('saving adult dataset to .pkl')
+
+        data.to_pickle(file_path)
+
     return(data)
 
 
-def save_data():
+def data_to_np(data):
 
+    # initially only keep the numeric columns
+    keep_cols = ['age',
+                 #'workclass',
+                 'fnlwgt',
+                 #'education',
+                 'education_num',
+                 #'marital_status',
+                 #'occupation',
+                 #'relationship',
+                 #'race',
+                 #'sex',
+                 'capital_gain',
+                 'capital_loss',
+                 'hours_per_week',
+                 #'native_country'
+                 ]
 
-a.to_pickle('adult.pkl')
-b = pd.read_pickle('adult.pkl')
+    X = np.array(data.loc[:, keep_cols])
+
+    y = np.array(data.loc[:, 'income'])
+
+    return(X, y)
+
 
 if __name__ == '__main__':
 
-    get_data()
+    adult = get_data()
+
+    print(adult.head())
+
+    X, y = data_to_np(adult)
+
 

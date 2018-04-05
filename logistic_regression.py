@@ -1,9 +1,6 @@
 import numpy as np
-
-
-
-
-
+import scipy.optimize as op
+import get_data
 
 
 def sigmoid(z):
@@ -12,7 +9,6 @@ def sigmoid(z):
     g = 1 / (1 + np.exp(-z))
     
     return(g)
-
 
 
 def cost_function(theta, X, y):
@@ -41,4 +37,29 @@ def gradient(theta, X, y):
     return(grad.flatten())
 
 
+def logistic_regression(X, y):
 
+    m, n = X.shape
+
+    initial_theta = np.zeros(n)
+
+    log_reg = op.minimize(fun = cost_function, 
+                          x0 = initial_theta, 
+                          args = (X, y),
+                          method = 'TNC',
+                          jac = gradient)
+
+    return(log_reg)
+
+
+if __name__ == '__main__':
+
+    adult = get_data.get_data()
+
+    print(adult.head())
+
+    adult_X, adult_y = get_data.data_to_np(adult)
+
+    log_reg = logistic_regression(X = adult_X, y = adult_y)
+
+    print(log_reg)
