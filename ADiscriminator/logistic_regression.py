@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import scipy.optimize as op
 from sklearn.preprocessing import StandardScaler
-import get_data
+#from ADiscriminator import get_adult_dataset
+import get_adult_dataset
 
 def sigmoid(z):
     '''Calculate the sigmoid of all elements of a np array'''
@@ -35,7 +36,7 @@ def gradient(theta, X, y):
     
     theta = theta.reshape((n, 1))
     
-    y = y.reshape((m,1))
+    y = y.reshape((m, 1))
 
     grad = (X.T).dot(sigmoid(X.dot(theta)) - y) / m
     
@@ -73,6 +74,8 @@ def logistic_regression(X, y, fit_intercept = True, standardise = True):
 
     initial_theta = np.zeros(n)
 
+    # using optimiser suggested by stackoverflow user chammu;
+    # https://stackoverflow.com/questions/18801002/fminunc-alternate-in-numpy
     log_reg = op.minimize(fun = cost_function, 
                           x0 = initial_theta, 
                           args = (X, y),
@@ -118,13 +121,18 @@ def logistic_regression(X, y, fit_intercept = True, standardise = True):
     return(model)
 
 
+def predict_proba(model, X):
+
+    return(np.dot(X, model['optimisation_result']['x']))
+
+
 
 
 if __name__ == '__main__':
 
-    adult = get_data.get_data()
+    adult = get_adult_dataset.get_data()
 
-    adult_X, adult_y = get_data.data_to_np(adult)
+    adult_X, adult_y = get_adult_dataset.data_to_np(adult)
 
     log_reg = logistic_regression(X = adult_X, y = adult_y)
 
