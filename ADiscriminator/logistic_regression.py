@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import scipy.optimize as op
 from sklearn.preprocessing import StandardScaler
-#from ADiscriminator import get_adult_dataset
-import get_adult_dataset
+from ADiscriminator import get_adult_dataset
+#import get_adult_dataset
 
 def sigmoid(z):
     '''Calculate the sigmoid of all elements of a np array'''
