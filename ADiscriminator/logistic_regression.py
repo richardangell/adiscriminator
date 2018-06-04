@@ -13,7 +13,7 @@ def sigmoid(z):
     return(g)
 
 
-def cost_function(theta, X, y):
+def cost_function(theta, X, y, regularisation, lambda_, include_first_coef):
     '''Calculate the cost for given theta, X and y'''
     
     m, n = X.shape
@@ -26,6 +26,30 @@ def cost_function(theta, X, y):
 
     J = np.sum((-y * np.log(sigmoid(x_dot_theta))) - ((1 - y) * np.log(1 - sigmoid(x_dot_theta)))) / m
     
+    if regularisation == 'l1':
+
+        if include_first_coef:
+
+            penalty_term = lambda_ * sum(np.abs(theta)) / (2 * m)
+
+        else:
+
+            penalty_term = lambda_ * sum(np.abs(theta[1:])) / (2 * m)
+
+        J = J + penalty_term
+
+    elif regularisation == 'l2':
+
+        if include_first_coef:
+
+            penalty_term = lambda_ * sum(theta ** 2) / (2 * m)
+
+        else:
+
+            penalty_term = lambda_ * sum(theta[1:] ** 2) / (2 * m)
+        
+        J = J + penalty_term
+
     return(J)
 
 
@@ -43,8 +67,17 @@ def gradient(theta, X, y):
     return(grad.flatten())
 
 
-def logistic_regression(X, y, fit_intercept = True, standardise = True):
+def logistic_regression(X, y, fit_intercept = True, standardise = True, regularisation = None):
     '''Fit a logistic regression model with optional standardisation and intercept'''
+
+    assert isinstance(fit_intercept, bool), 'fit_intercept must be bool'
+
+    assert isinstance(standardise, bool), 'standardise must be bool'
+
+    regularisation_valid = ['l1', 'l2', None]
+
+    assert regularisation in regularisation_valid, 
+        'regularisation must be one of %s' % (regularisation_valid)
 
     model = {}
 
