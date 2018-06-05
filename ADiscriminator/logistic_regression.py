@@ -53,7 +53,7 @@ def cost_function(theta, X, y, regularisation, lambda_, include_first_coef):
     return(J)
 
 
-def gradient(theta, X, y):
+def gradient(theta, X, y, regularisation, lambda_):
     '''Calculate the gradient of the cost function w.r.t. each element of theta'''
     
     m, n = X.shape
@@ -64,6 +64,20 @@ def gradient(theta, X, y):
 
     grad = (X.T).dot(sigmoid(X.dot(theta)) - y) / m
     
+    if regularisation == 'l1':
+
+        
+
+    elif regularisation == 'l2':
+
+        penalty_term = (lambda_ / m) * theta
+
+        if not include_first_coef:
+
+            penalty_term[0] = 0
+
+        grad = grad + penalty_term
+
     return(grad.flatten())
 
 
