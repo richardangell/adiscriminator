@@ -3,19 +3,23 @@ import numpy as np
 import os.path
 
 
-def get_data():
+def get_data(verbose = 0):
     
     file_path = 'adult.pkl'
     
     if os.path.exists(file_path):
+        
+        if verbose > 0:
 
-        print('loading adult dataset from .pkl')
+            print('loading adult dataset from .pkl')
 
         data = pd.read_pickle(file_path)
 
     else:
 
-        print('downloading adult dataset from uci ml repository')
+        if verbose > 0:
+
+            print('downloading adult dataset from uci ml repository')
 
         data_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data'
         
@@ -39,7 +43,9 @@ def get_data():
         
         data['income'] = (data['income'] == ' <=50K') * 1
 
-        print('saving adult dataset to .pkl')
+        if verbose > 0:
+
+            print('saving adult dataset to .pkl')
 
         data.to_pickle(file_path)
 

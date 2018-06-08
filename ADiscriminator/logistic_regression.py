@@ -239,21 +239,7 @@ if __name__ == '__main__':
 
     log_reg = logistic_regression(X = adult_X, y = adult_y, regularisation = 'l2', lambda_ = 5, penalise_intercept = True)
 
-    print('own:')
-
     print(log_reg['coefficients'])
-
-    sk_log_reg = LogisticRegression(C = 1, penalty = 'l2', fit_intercept = True)
-
-    sk_log_reg.fit(adult_X, adult_y)
-
-    print('sklearn:')
-
-    print(sk_log_reg.intercept_)
-
-    print(sk_log_reg.coef_ )
-
-    print('sklearn2:')
 
     adult_X2 = preprocessing.scale(adult_X)
 
@@ -263,20 +249,8 @@ if __name__ == '__main__':
 
     print(sk_log_reg2.intercept_)
 
-    print(sk_log_reg2.coef_[0] )
+    print(sk_log_reg2.coef_[0])
 
-    adult_X = np.hstack([np.ones((adult_X.shape[0], 1)), adult_X])
 
-    glm = sm.GLM(adult_y, adult_X, family = sm.families.Binomial(link = sm.families.links.logit))
 
-    glm_result = glm.fit_regularized(method = 'elastic_net', alpha = 0, L1_wt = 0)
 
-    glm_result2 = glm.fit()
-
-    print('statsmodels l2')
-
-    print(glm_result.params)
-
-    print('statsmodels')
-
-    print(glm_result2.params)
