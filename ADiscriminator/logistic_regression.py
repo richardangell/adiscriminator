@@ -9,7 +9,6 @@ import statsmodels.api as sm
 from sklearn import preprocessing
 
 
-
 def sigmoid(z):
     '''Calculate the sigmoid of all elements of a np array'''
     
@@ -32,7 +31,6 @@ def cost_function(theta, X, y):
     J = np.sum((-y * np.log(sigmoid(x_dot_theta))) - ((1 - y) * np.log(1 - sigmoid(x_dot_theta)))) / m
 
     return(J)
-
 
 
 def cost_function_l2(theta, X, y, lambda_, include_first_coef):
@@ -61,6 +59,46 @@ def cost_function_l2(theta, X, y, lambda_, include_first_coef):
     return(J)
 
 
+def cost_function_adiscriminator_cat(theta, X, y, adiscriminator):
+
+    J = cost_function(theta, X, y)
+    
+    discrimination_penalty = cost_differential(theta, X, y, adiscriminator)
+
+    print('J:', J, 'pen:', discrimination_penalty, 'total:',  J + discrimination_penalty)
+
+    J = J + discrimination_penalty
+  
+    return(J)
+
+
+def cost_differential(theta, X, y, adiscriminator):
+
+    m, n = X.shape
+    
+    theta = theta.reshape((n, 1))
+    
+    y = y.reshape((m,1))
+
+    x_dot_theta = X.dot(theta)
+
+    idx_g1 = adiscriminator == 0
+
+    weight_g1 = np.sum(idx_g1)
+
+    weight_g2 = len(adiscriminator) - weight_g1  
+
+    preds = sigmoid(x_dot_theta)
+
+    g1_ave = np.sum(preds[idx_g1]) / weight_g1
+
+    g2_ave = np.sum(preds[np.invert(idx_g1)]) / weight_g2
+
+    sq_diff = (g1_ave - g2_ave) ** 2
+
+    print(g1_ave, g2_ave,sq_diff)
+
+    return(30 * -np.log(1 - sq_diff))
 
 
 
@@ -76,9 +114,6 @@ def gradient(theta, X, y):
     grad = (X.T).dot(sigmoid(X.dot(theta)) - y) / m
 
     return(grad.flatten())
-
-
-
 
 
 def gradient_l2(theta, X, y, lambda_, include_first_coef):
@@ -103,9 +138,62 @@ def gradient_l2(theta, X, y, lambda_, include_first_coef):
     return(grad.flatten())
 
 
+def gradient_adiscriminator_cat(theta, X, y, adiscriminator):
+
+    grad = gradient(theta, X, y)
+
+    grad_penalty = gradient_differential(theta, X, y, adiscriminator)
+
+    grad = grad + grad_penalty
+
+    return(grad)
 
 
-def logistic_regression(X, y, fit_intercept = True, standardise = True, regularisation = None, lambda_ = 0, penalise_intercept = None):
+
+
+
+def gradient_differential(theta, X, y, adiscriminator):
+
+    m, n = X.shape
+    
+    theta = theta.reshape((n, 1))
+    
+    y = y.reshape((m, 1))
+
+    preds = sigmoid(X.dot(theta))
+
+    idx_g1 = adiscriminator == 0
+
+    weight_g1 = np.sum(idx_g1)
+
+    weight_g2 = len(adiscriminator) - weight_g1  
+
+    preds2 = preds * (1 - preds)
+
+    preds3 = preds2 * X
+
+    group_mult = idx_g1.astype(int)
+
+    group_mult[group_mult == 0] = -1
+
+    group_mult = group_mult.reshape((m ,1))
+
+    preds4 = group_mult * preds3 
+
+    pt1 = (preds4[idx_g1].sum(axis = 0) / weight_g1)
+
+    pt2 = (preds4[np.invert(idx_g1)].sum(axis = 0) / weight_g2)
+
+    return(pt1 + pt2)
+
+
+def logistic_regression(X, y, 
+                        fit_intercept = True, 
+                        standardise = True, 
+                        regularisation = None, 
+                        lambda_ = 0, 
+                        penalise_intercept = None,
+                        adiscriminator_column = None):
     '''Fit a logistic regression model with optional standardisation and intercept'''
 
     assert isinstance(fit_intercept, bool), 'fit_intercept must be bool'
@@ -125,6 +213,10 @@ def logistic_regression(X, y, fit_intercept = True, standardise = True, regulari
 
     assert penalise_intercept in penalise_intercept_valid, \
         'penalise_intercept must be one of %s' % (penalise_intercept_valid)
+
+    if adiscriminator_column is not None:
+
+        assert len(adiscriminator_column) == X.shape[0], 'adiscriminator_column must be the same length as X'
 
     # by default if an intercept is included in the model do not include it in the penalisation
     if penalise_intercept is None:
@@ -165,7 +257,7 @@ def logistic_regression(X, y, fit_intercept = True, standardise = True, regulari
 
     initial_theta = np.zeros(n)
 
-    if regularisation is None:
+    if (regularisation is None) & (adiscriminator_column is None):
 
         # using optimiser suggested by stackoverflow user chammu;
         # https://stackoverflow.com/questions/18801002/fminunc-alternate-in-numpy
@@ -175,13 +267,21 @@ def logistic_regression(X, y, fit_intercept = True, standardise = True, regulari
                               method = 'TNC',
                               jac = gradient)
 
-    else:
+    elif regularisation is not None:
 
         log_reg = op.minimize(fun = cost_function_l2, 
                               x0 = initial_theta, 
                               args = (X, y, lambda_, penalise_intercept),
                               method = 'TNC',
                               jac = gradient_l2)
+
+    elif adiscriminator_column is not None:
+
+        log_reg = op.minimize(fun = cost_function_adiscriminator_cat, 
+                              x0 = initial_theta, 
+                              args = (X, y, adiscriminator_column),
+                              method = 'TNC',
+                              jac = gradient_adiscriminator_cat)
 
     model['optimisation_results'] = log_reg
 
@@ -224,12 +324,12 @@ def logistic_regression(X, y, fit_intercept = True, standardise = True, regulari
 
 def predict_proba(model, X):
 
-    return(np.dot(X, model['optimisation_result']['x']))
-
-
+    return(sigmoid(np.dot(X, model['coefficients']['coef'])))
 
 
 if __name__ == '__main__':
+
+    print('-----')
 
     adult = get_adult_dataset.get_data()
 
@@ -251,6 +351,8 @@ if __name__ == '__main__':
 
     print(sk_log_reg2.coef_[0])
 
+    gender_col = np.array((adult.sex == ' Female').astype(int))
 
+    dis_log_reg = logistic_regression(X = adult_X, y = adult_y, adiscriminator_column = gender_col)
 
-
+    print(dis_log_reg['coefficients'])
