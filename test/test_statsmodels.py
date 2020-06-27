@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from numpy.testing import assert_almost_equal
 import statsmodels.api as sm
-from ADiscriminator import get_adult_dataset
+from adiscriminator import get_adult_dataset
 
 class TestStatsmodels(unittest.TestCase):
 

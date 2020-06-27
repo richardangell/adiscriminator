@@ -6,8 +6,8 @@ import statsmodels.api as sm
 from sklearn.linear_model import LogisticRegression
 from sklearn import preprocessing
 from numpy.testing import assert_almost_equal
-from ADiscriminator import logistic_regression
-from ADiscriminator import get_adult_dataset
+from adiscriminator import logistic_regression
+from adiscriminator import get_adult_dataset
 
 
 class TestLogisticRegression(unittest.TestCase):

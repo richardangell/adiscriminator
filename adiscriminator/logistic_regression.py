@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 import scipy.optimize as op
 from sklearn.preprocessing import StandardScaler
-from ADiscriminator import get_adult_dataset
-#import get_adult_dataset
+from adiscriminator import get_adult_dataset
 from sklearn.linear_model import LogisticRegression
 import statsmodels.api as sm
 from sklearn import preprocessing
