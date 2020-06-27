@@ -1,10 +1,10 @@
 # Gradient derivation
 
-New Cost Function = Logistic Regression Cost Function + Discrimination Penalty ($p$)
+`New Cost Function = Logistic Regression Cost Function + Discrimination Penalty` <img src="https://render.githubusercontent.com/render/math?math=%24p%24">
 
 Let $G1$ and $G2$ be the (only) levels of a categorical variable, that we want to prevent discrimination by.
 
-Let $AVE_{group}$ be the average prediction for observations in $group$.
+Let <img src="https://render.githubusercontent.com/render/math?math=%24AVE_%7Bgroup%7D%24"> be the average prediction for observations in `group`.
 
 <img src="https://render.githubusercontent.com/render/math?math=%24p%20%3D%20-log(1%20-%20(AVE_%7BG1%7D%20-%20AVE_%7BG2%7D)%5E%7B2%7D)%20%3D%20-log(1%20-%20a%5E2)%24">
 
