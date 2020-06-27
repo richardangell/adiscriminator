@@ -24,4 +24,4 @@ Note <img src="https://render.githubusercontent.com/render/math?math=%24%5Cfrac%
 
 <img src="https://render.githubusercontent.com/render/math?math=%24%5Cfrac%7B%5Cdelta%20a%7D%7B%5Cdelta%20%5Cbeta_%7Bi%7D%7D%20%3D%20%5Csum_%7Bj%7DI_%7Bj%2CG1%7D.x_%7Bi%2Cj%7D.sigmoid(%5Csum%5Cbeta_%7Bi%7Dx_%7Bi%2Cj%7D).(1%20-%20sigmoid(%5Csum%5Cbeta_%7Bi%7Dx_%7Bi%2Cj%7D))%2F%5Csum_%7Bj%7DI_%7Bj%2CG1%7D%20%2B%20%5Csum_%7Bj%7DI_%7Bj%2CG2%7D.x_%7Bi%2Cj%7D.sigmoid(%5Csum%5Cbeta_%7Bi%7Dx_%7Bi%2Cj%7D).(1%20-%20sigmoid(%5Csum%5Cbeta_%7Bi%7Dx_%7Bi%2Cj%7D))%2F%5Csum_%7Bj%7DI_%7Bj%2CG2%7D%20%24">
 
-
+Thanks to [jsfiddle.net](https://jsfiddle.net/8ndx694g/) for converting latex formulae to Github render html. 
