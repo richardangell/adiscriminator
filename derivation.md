@@ -6,7 +6,7 @@ Let $G1$ and $G2$ be the (only) levels of a categorical variable, that we want t
 
 Let $AVE_{group}$ be the average prediction for observations in $group$.
 
-$$p = -log(1 - (AVE_{G1} - AVE_{G2})^{2}) = -log(1 - a^2)$$
+<img src="https://render.githubusercontent.com/render/math?math=%24p%20%3D%20-log(1%20-%20(AVE_%7BG1%7D%20-%20AVE_%7BG2%7D)%5E%7B2%7D)%20%3D%20-log(1%20-%20a%5E2)%24">
 
 where $a = AVE_{G1} - AVE_{G2}$ is the difference between average predictions for $G1$ and $G2$.
 
