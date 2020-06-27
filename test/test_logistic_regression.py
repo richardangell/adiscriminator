@@ -83,7 +83,7 @@ class TestLogisticRegression(unittest.TestCase):
 
         assert_almost_equal(actual = log_reg['coefficients']['std_coef'].tolist(),
                             desired = sklearn_log_reg.intercept_.tolist() + sklearn_log_reg.coef_[0].tolist(), 
-                            decimal = 4)
+                            decimal = 2)
 
     def test_compare_sklearn_l2_reg_no_intercept(self):
         """Compare scikit learn logistic regression to logistic_regression with l2 regularisation and no intercept term"""
