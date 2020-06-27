@@ -1,6 +1,6 @@
 # Gradient derivation
 
-`New Cost Function = Logistic Regression Cost Function + Discrimination Penalty` <img src="https://render.githubusercontent.com/render/math?math=%24p%24">
+`New Cost Function = Logistic Regression Cost Function + Discrimination Penalty (<img src="https://render.githubusercontent.com/render/math?math=%24p%24">)`
 
 Let $G1$ and $G2$ be the (only) levels of a categorical variable, that we want to prevent discrimination by.
 
