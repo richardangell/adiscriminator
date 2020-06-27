@@ -18,10 +18,6 @@ class TestLogisticRegression(unittest.TestCase):
     # intercept coefficient in position 1
     # standardised coefficients if specified
     # with standardised coefs, non standardised can be transformed to standardised 
-
-    def test_1(self):
-
-        self.assertTrue(True)
  
     def test_compare_statsmodels_non_reg(self):
         """Compare statsmodels logistic regression to non regularised logistic_regression"""
