@@ -7,7 +7,7 @@ from sklearn import preprocessing
 
 from numpy.testing import assert_almost_equal
 
-from adiscriminator import logistic_regression
+from adiscriminator.logistic_regression import logistic_regression
 from adiscriminator import data
 
 
