@@ -71,7 +71,7 @@ def cost_function_adiscriminator_cat(theta, X, y, adiscriminator):
     return(J)
 
 
-def cost_differential(theta, X, y, adiscriminator):
+def cost_differential(theta, X, y, adiscriminator, lambda_):
 
     m, n = X.shape
     
@@ -95,9 +95,11 @@ def cost_differential(theta, X, y, adiscriminator):
 
     sq_diff = (g1_ave - g2_ave) ** 2
 
-    print(g1_ave, g2_ave,sq_diff)
+    print(g1_ave, g2_ave, sq_diff)
 
-    return(10 * -np.log(1 - sq_diff))
+    penalty_cost = lambda_ * -np.log(1 - sq_diff)
+
+    return penalty_cost
 
 
 
@@ -137,11 +139,11 @@ def gradient_l2(theta, X, y, lambda_, include_first_coef):
     return(grad.flatten())
 
 
-def gradient_adiscriminator_cat(theta, X, y, adiscriminator):
+def gradient_adiscriminator_cat(theta, X, y, adiscriminator, lambda_):
 
     grad = gradient(theta, X, y)
 
-    grad_penalty = gradient_differential(theta, X, y, adiscriminator)
+    grad_penalty = gradient_differential(theta, X, y, adiscriminator, lambda_)
 
     grad = grad + grad_penalty
 
@@ -151,7 +153,7 @@ def gradient_adiscriminator_cat(theta, X, y, adiscriminator):
 
 
 
-def gradient_differential(theta, X, y, adiscriminator):
+def gradient_differential(theta, X, y, adiscriminator, lambda_):
 
     m, n = X.shape
     
@@ -184,6 +186,7 @@ def gradient_differential(theta, X, y, adiscriminator):
     pt2 = (preds4[np.invert(idx_g1)].sum(axis = 0) / weight_g2)
 
     return(pt1 + pt2)
+
 
 
 def logistic_regression(X, y, 
@@ -278,7 +281,7 @@ def logistic_regression(X, y,
 
         log_reg = op.minimize(fun = cost_function_adiscriminator_cat, 
                               x0 = initial_theta, 
-                              args = (X, y, adiscriminator_column),
+                              args = (X, y, adiscriminator_column, lambda_),
                               method = 'TNC',
                               jac = gradient_adiscriminator_cat)
 
