@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
-import scipy.optimize as op
-from sklearn.preprocessing import StandardScaler
-from adiscriminator import get_adult_dataset
-from sklearn.linear_model import LogisticRegression
 import statsmodels.api as sm
+import scipy.optimize as op
 from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+from adiscriminator import data
+
 
 
 def sigmoid(z):

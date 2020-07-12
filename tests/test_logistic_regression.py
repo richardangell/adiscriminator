@@ -1,13 +1,15 @@
-import unittest
 import pandas as pd
 import numpy as np
-from scipy import stats
 import statsmodels.api as sm
+from scipy import stats
 from sklearn.linear_model import LogisticRegression
 from sklearn import preprocessing
+import unittest
 from numpy.testing import assert_almost_equal
+
 from adiscriminator import logistic_regression
-from adiscriminator import get_adult_dataset
+from adiscriminator import data
+
 
 
 class TestLogisticRegression(unittest.TestCase):

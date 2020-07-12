@@ -1,9 +1,12 @@
-import unittest
 import pandas as pd
 import numpy as np
-from numpy.testing import assert_almost_equal
 import statsmodels.api as sm
-from adiscriminator import get_adult_dataset
+import unittest
+from numpy.testing import assert_almost_equal
+
+from adiscriminator import data
+
+
 
 class TestStatsmodels(unittest.TestCase):
 

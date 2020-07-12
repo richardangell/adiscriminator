@@ -1,3 +1,3 @@
 from adiscriminator._version import __version__
-from adiscriminator import get_adult_dataset
+from adiscriminator import data
 from adiscriminator import logistic_regression
