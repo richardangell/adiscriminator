@@ -97,7 +97,7 @@ def cost_differential(theta, X, y, adiscriminator):
 
     print(g1_ave, g2_ave,sq_diff)
 
-    return(30 * -np.log(1 - sq_diff))
+    return(10 * -np.log(1 - sq_diff))
 
 
 
@@ -323,7 +323,13 @@ def logistic_regression(X, y,
 
 def predict_proba(model, X):
 
-    return(sigmoid(np.dot(X, model['coefficients']['coef'])))
+    if model['fit_intercept']:
+        
+        X = np.hstack([np.ones((X.shape[0], 1)), X])
+
+    predictions = sigmoid(np.dot(X, model['coefficients']['coef']))
+
+    return predictions
 
 
 if __name__ == '__main__':
