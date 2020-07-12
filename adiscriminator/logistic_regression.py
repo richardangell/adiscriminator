@@ -58,11 +58,11 @@ def cost_function_l2(theta, X, y, lambda_, include_first_coef):
     return(J)
 
 
-def cost_function_adiscriminator_cat(theta, X, y, adiscriminator):
+def cost_function_adiscriminator_cat(theta, X, y, adiscriminator, lambda_):
 
     J = cost_function(theta, X, y)
     
-    discrimination_penalty = cost_differential(theta, X, y, adiscriminator)
+    discrimination_penalty = cost_differential(theta, X, y, adiscriminator, lambda_)
 
     print('J:', J, 'pen:', discrimination_penalty, 'total:',  J + discrimination_penalty)
 
@@ -81,25 +81,36 @@ def cost_differential(theta, X, y, adiscriminator, lambda_):
 
     x_dot_theta = X.dot(theta)
 
-    idx_g1 = adiscriminator == 0
-
-    weight_g1 = np.sum(idx_g1)
-
-    weight_g2 = len(adiscriminator) - weight_g1  
-
     preds = sigmoid(x_dot_theta)
 
-    g1_ave = np.sum(preds[idx_g1]) / weight_g1
+    d = calculate_d(preds, adiscriminator)
 
-    g2_ave = np.sum(preds[np.invert(idx_g1)]) / weight_g2
+    d_sq = d ** 2
 
-    sq_diff = (g1_ave - g2_ave) ** 2
-
-    print(g1_ave, g2_ave, sq_diff)
-
-    penalty_cost = lambda_ * -np.log(1 - sq_diff)
+    penalty_cost = lambda_ * -np.log(1 - d_sq)
 
     return penalty_cost
+
+
+
+def calculate_d(predictions, adiscriminator):
+    """Calculate the difference in average prediction by groups."""
+
+    g1_loc = adiscriminator == 0
+
+    g1_weight = np.sum(g1_loc)
+
+    g2_weight = len(adiscriminator) - g1_weight  
+
+    g1_ave = np.sum(predictions[g1_loc]) / g1_weight
+
+    g2_ave = np.sum(predictions[np.invert(g1_loc)]) / g2_weight
+
+    d = g1_ave - g2_ave
+
+    print(g1_ave, g2_ave, d, d ** 2)
+
+    return d
 
 
 
@@ -161,31 +172,26 @@ def gradient_differential(theta, X, y, adiscriminator, lambda_):
     
     y = y.reshape((m, 1))
 
-    preds = sigmoid(X.dot(theta))
+    p = sigmoid(X.dot(theta))
 
-    idx_g1 = adiscriminator == 0
+    d = calculate_d(p, adiscriminator)
 
-    weight_g1 = np.sum(idx_g1)
+    p_one_minus_p = p * (1 - p)
 
-    weight_g2 = len(adiscriminator) - weight_g1  
+    p_one_minus_p_X = p_one_minus_p * X
 
-    preds2 = preds * (1 - preds)
+    g1_loc = adiscriminator == 0
 
-    preds3 = preds2 * X
+    g1_weight = np.sum(g1_loc)
 
-    group_mult = idx_g1.astype(int)
+    g2_weight = len(adiscriminator) - g1_weight  
 
-    group_mult[group_mult == 0] = -1
+    g1_gradient = p_one_minus_p_X[g1_loc].sum(axis = 0) / g1_weight 
+    g2_gradient = p_one_minus_p_X[np.invert(g1_loc)].sum(axis = 0) / g2_weight
 
-    group_mult = group_mult.reshape((m ,1))
+    gradient = -2 * d * lambda_ * (g1_gradient - g2_gradient)  / (1 - d ** 2) 
 
-    preds4 = group_mult * preds3 
-
-    pt1 = (preds4[idx_g1].sum(axis = 0) / weight_g1)
-
-    pt2 = (preds4[np.invert(idx_g1)].sum(axis = 0) / weight_g2)
-
-    return(pt1 + pt2)
+    return gradient
 
 
 
