@@ -21,7 +21,7 @@ def test_compare_glm_logistic_regression():
 
     log_reg_result = log_reg.fit()
 
-    glm = sm.GLM(adult_y, adult_X, family = sm.families.Binomial(link = sm.families.links.logit))
+    glm = sm.GLM(adult_y, adult_X, family = sm.families.Binomial())
 
     glm_result = glm.fit()
 
