@@ -16,7 +16,7 @@ with the following gradient;
 
 $\frac{\delta J(\theta)}{\delta\theta_{j}} = \frac{1}{m}\sum^{m}_{i=1}(h_{\theta}(x^{i})) - y^{i})$
 
-Also of note is the partial derivative of model predictions w.r.t <img src="https://render.githubusercontent.com/render/math?math=%5Ctheta%5E%7Bj%7D">;
+Also of note is the partial derivative of model predictions w.r.t <img src="https://render.githubusercontent.com/render/math?math=%24%5Ctheta_%7Bj%7D%24">;
 
 <img src="https://render.githubusercontent.com/render/math?math=%24%5Cfrac%7B%5Cdelta%20h_%7B%5Ctheta%7D(x%5E%7Bi%7D)%7D%7B%5Cdelta%5Ctheta_%7Bj%7D%7D%20%3D%20h_%7B%5Ctheta%7D(x%5E%7Bi%7D)(1%20-%20h_%7B%5Ctheta%7D(x%5E%7Bi%7D))x_%7Bj%7D%5E%7Bi%7D%24">
 
