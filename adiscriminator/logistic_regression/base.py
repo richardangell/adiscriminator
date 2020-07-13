@@ -29,7 +29,7 @@ class LogisticRegression():
 
         if not type(standardise) is bool:
             
-            raise TypeError('fit_intercept must be bool')
+            raise TypeError('standardise must be bool')
 
         self.fit_intercept = fit_intercept
         self.standardise = standardise
