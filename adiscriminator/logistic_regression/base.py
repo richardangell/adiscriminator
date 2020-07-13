@@ -232,7 +232,7 @@ class LogisticRegression():
             
             X = np.hstack([np.ones((X.shape[0], 1)), X])
 
-        predictions = self.sigmoid(np.dot(X, self.coefficients['coef']))
+        predictions = self.calculate_p(self.coefficients['coef'].to_numpy(), X)  
 
         return predictions
 
