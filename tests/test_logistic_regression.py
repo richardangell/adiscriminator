@@ -7,7 +7,7 @@ from sklearn import preprocessing
 
 from numpy.testing import assert_almost_equal
 
-from adiscriminator.logistic_regression import logistic_regression
+import adiscriminator as ad
 from adiscriminator import data
 
 
@@ -31,13 +31,9 @@ def test_compare_statsmodels_non_reg():
 
     adult_X, adult_y = data.data_to_np(adult)
 
-    log_reg = logistic_regression.logistic_regression(X = adult_X, 
-                                                        y = adult_y,
-                                                        fit_intercept = True, 
-                                                        standardise = True,
-                                                        regularisation = None,
-                                                        lambda_ = 0, 
-                                                        penalise_intercept = None)
+    ad_log_reg = ad.logistic_regression.base.LogisticRegression(fit_intercept = True, standardise = True)
+
+    ad_log_reg.fit(adult_X, adult_y)
 
     # statsmodels requires a constant column to be added to fit an intercept
     adult_X = np.hstack([np.ones((adult_X.shape[0], 1)), adult_X])
@@ -46,7 +42,7 @@ def test_compare_statsmodels_non_reg():
 
     result = statsmodels_log_reg.fit()
 
-    assert_almost_equal(actual = log_reg['coefficients']['coef'].tolist(),
+    assert_almost_equal(actual = ad_log_reg.coefficients['coef'].tolist(),
                         desired = result.params.tolist(), 
                         decimal = 3)
 
