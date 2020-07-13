@@ -196,7 +196,7 @@ class LogisticRegression():
         
         y = y.reshape((self.m, 1))
 
-        grad = (X.T).dot(self.sigmoid(X.dot(theta)) - y) / self.m
+        grad = (X.T).dot(self.calculate_p(theta, X) - y) / self.m
 
         grad = grad.flatten()
 
