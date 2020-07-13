@@ -1,1 +1,1 @@
-from adiscriminator.logistic_regression import logistic_regression
+from adiscriminator.logistic_regression import base
