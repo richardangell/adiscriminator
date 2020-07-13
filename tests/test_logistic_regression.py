@@ -87,13 +87,14 @@ def test_compare_sklearn_l2_reg_no_intercept():
 
     regularisation_value = 4
 
-    log_reg = logistic_regression.logistic_regression(X = adult_X, 
-                                                        y = adult_y,
-                                                        fit_intercept = False, 
-                                                        standardise = True,
-                                                        regularisation = 'l2',
-                                                        lambda_ = regularisation_value, 
-                                                        penalise_intercept = None)
+    ad_log_reg = ad.logistic_regression.ridge.RidgeRegression(
+        fit_intercept = False, 
+        standardise = True,
+        lambda_ = regularisation_value, 
+        penalise_intercept = False
+    )
+
+    ad_log_reg.fit(adult_X, adult_y)
 
     adult_X = preprocessing.scale(adult_X)
 
@@ -101,8 +102,8 @@ def test_compare_sklearn_l2_reg_no_intercept():
 
     sklearn_log_reg.fit(adult_X, adult_y)
 
-    assert_almost_equal(actual = log_reg['coefficients']['std_coef'].tolist(),
+    assert_almost_equal(actual = ad_log_reg.coefficients['std_coef'].tolist(),
                         desired = sklearn_log_reg.coef_[0].tolist(), 
-                        decimal = 4)
+                        decimal = 3)
 
 
