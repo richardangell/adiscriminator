@@ -56,13 +56,14 @@ def test_compare_sklearn_l2_reg():
     regularisation_value = 8
 
     # note scikit learn penalises the intercept term as well as all the other coefficients
-    log_reg = logistic_regression.logistic_regression(X = adult_X, 
-                                                        y = adult_y,
-                                                        fit_intercept = True, 
-                                                        standardise = True,
-                                                        regularisation = 'l2',
-                                                        lambda_ = regularisation_value, 
-                                                        penalise_intercept = True)
+    ad_log_reg = ad.logistic_regression.ridge.RidgeRegression(
+        fit_intercept = True, 
+        standardise = True,
+        lambda_ = regularisation_value, 
+        penalise_intercept = True
+    )
+
+    ad_log_reg.fit(adult_X, adult_y)
 
     # non-standardised scikit learn coefficients don't seem to match
     # so check the standardised coefficients for now
@@ -73,7 +74,7 @@ def test_compare_sklearn_l2_reg():
 
     sklearn_log_reg.fit(adult_X, adult_y)
 
-    assert_almost_equal(actual = log_reg['coefficients']['std_coef'].tolist(),
+    assert_almost_equal(actual = ad_log_reg.coefficients['std_coef'].tolist(),
                         desired = sklearn_log_reg.intercept_.tolist() + sklearn_log_reg.coef_[0].tolist(), 
                         decimal = 2)
 
