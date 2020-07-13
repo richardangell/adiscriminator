@@ -142,17 +142,38 @@ class LogisticRegression():
 
         '''
 
-        theta = theta.reshape((self.n, 1))
-        
         y = y.reshape((self.m, 1))
 
-        x_dot_theta = X.dot(theta)
-
-        p = self.sigmoid(x_dot_theta)
+        p = self.calculate_p(theta, X)
 
         J = np.sum((-y * np.log(p)) - ((1 - y) * np.log(1 - p))) / self.m
 
         return J
+
+
+    def calculate_p(self, theta, X):
+        '''Calculate predictions for given coefficients (theta) and data (X).
+        
+        Function is split out so it can be reused in other places, rather than
+        being inside cost_function.
+
+        Parameters
+        ----------
+        theta : np.ndarray
+            Coefficient values.
+
+        X : np.ndarray
+            2d array of explanatory variables to fit model on.
+
+        '''
+
+        theta = theta.reshape((self.n, 1))
+        
+        x_dot_theta = X.dot(theta)
+
+        p = self.sigmoid(x_dot_theta)
+
+        return p
 
 
     def gradient(self, theta, X, y):
