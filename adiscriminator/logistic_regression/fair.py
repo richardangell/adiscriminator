@@ -29,10 +29,6 @@ class GroupMeanEqualisingRegression(LogisticRegression):
 
         super().__init__(fit_intercept = fit_intercept, standardise = standardise)
 
-        #if not type(lambda_) in (float, int):
-
-        #    raise TypeError('lambda_ must be float or int')
-
         self.lambda_ = lambda_
 
         if len(np.unique(group)) > 2:

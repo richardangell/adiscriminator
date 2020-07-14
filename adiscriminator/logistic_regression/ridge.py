@@ -33,10 +33,6 @@ class RidgeRegression(LogisticRegression):
 
         self.penalise_intercept = penalise_intercept
 
-        if not type(lambda_) in (float, int):
-
-            raise TypeError('lambda_ must be float or int')
-
         self.lambda_ = lambda_
 
 
