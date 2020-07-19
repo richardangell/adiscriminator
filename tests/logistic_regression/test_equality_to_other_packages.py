@@ -12,13 +12,6 @@ from adiscriminator import data
 
 
 
-# tests to add;
-# number of coefficients correct
-# intercept coefficient if specified
-# intercept coefficient in position 1
-# standardised coefficients if specified
-# with standardised coefs, non standardised can be transformed to standardised 
-
 def test_compare_statsmodels_non_reg():
     """Compare statsmodels logistic regression to non regularised logistic_regression"""
 
