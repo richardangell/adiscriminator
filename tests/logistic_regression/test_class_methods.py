@@ -40,7 +40,7 @@ def initialise_model(cls, standardise, fit_intercept):
     ]
 )
 class TestFit():
-    """Tests for the fit method."""
+    """Tests for the fit method on model classes."""
 
     def setup_class(self):
         """Load data to build models on."""
@@ -270,3 +270,190 @@ class TestFit():
             model.coefficients['std_coef'] / StandardScaler().fit(self.X).scale_, 
             model.coefficients['coef']
         ) 
+
+
+
+@pytest.mark.parametrize(
+    "cls", 
+    [
+        LogisticRegression, 
+        RidgeRegression, 
+        GroupMeanEqualisingRegression,   
+    ]
+)
+class TestCostFunction():
+    """Tests for the cost_function method on model classes."""
+
+    def setup_class(self):
+        """Load data to build models on."""
+
+        adult = ad.data.get_data()
+        self.X, self.y = ad.data.data_to_np(adult)
+
+
+    def test_return_value(self, cls):
+        """Test return value is the correct type (and shape)."""
+
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = True)
+
+        # set m as it is usually set in fit
+        model.m, model.n = self.X.shape
+
+        dummy_theta = np.zeros(self.X.shape[1])
+
+        J = model.cost_function(
+            theta = dummy_theta,
+            X = self.X, 
+            y = self.y
+        )
+
+        if isinstance(J, np.ndarray):
+
+            pytest.fail('J should be not be a np.ndarray')           
+
+        assert isinstance(J , np.float), \
+            f'cost_function does not return expected type (np.float) got {type(J)}'
+
+
+
+@pytest.mark.parametrize(
+    "cls", 
+    [
+        LogisticRegression, 
+        RidgeRegression, 
+        GroupMeanEqualisingRegression,   
+    ]
+)
+class TestCalculateP():
+    """Tests for the calculate_p method on model classes."""
+
+    def setup_class(self):
+        """Load data to build models on."""
+
+        adult = ad.data.get_data()
+        self.X, self.y = ad.data.data_to_np(adult)
+
+
+    def test_return_shape(self, cls):
+        """Test return value is the correct shape."""
+
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = True)
+
+        # set m as it is usually set in fit
+        model.m, model.n = self.X.shape
+
+        dummy_theta = np.zeros(self.X.shape[1])
+
+        p = model.calculate_p(
+            theta = dummy_theta,
+            X = self.X
+        )
+
+        assert p.shape == (self.X.shape[0], 1), 'Incorrect shape for calculate_p output'
+
+
+
+@pytest.mark.parametrize(
+    "cls", 
+    [
+        LogisticRegression, 
+        RidgeRegression, 
+        GroupMeanEqualisingRegression,   
+    ]
+)
+class TestGradient():
+    """Tests for the gradient method on model classes."""
+
+    def setup_class(self):
+        """Load data to build models on."""
+
+        adult = ad.data.get_data()
+        self.X, self.y = ad.data.data_to_np(adult)
+
+
+    def test_return_shape(self, cls):
+        """Test return value is the correct shape."""
+
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = True)
+
+        # set m as it is usually set in fit
+        model.m, model.n = self.X.shape
+
+        dummy_theta = np.zeros(self.X.shape[1])
+
+        grad = model.gradient(
+            theta = dummy_theta,
+            X = self.X, 
+            y = self.y
+        )
+
+        assert grad.shape == (self.X.shape[1], ), 'Incorrect shape for gradient output'
+
+
+
+@pytest.mark.parametrize(
+    "cls", 
+    [
+        LogisticRegression, 
+        RidgeRegression, 
+        GroupMeanEqualisingRegression,   
+    ]
+)
+class TestSigmoid():
+    """Tests for the sigmoid method on model classes."""
+
+    def setup_class(self):
+        """Load data to build models on."""
+
+        adult = ad.data.get_data()
+        self.X, self.y = ad.data.data_to_np(adult)
+
+
+    def test_return_shape(self, cls):
+        """Test return value is the correct shape."""
+
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = True)
+
+        sigmoid_X = model.sigmoid(
+            z = self.X
+        )
+
+        assert sigmoid_X.shape == self.X.shape, 'Incorrect shape for sigmoid output'
+
+
+
+@pytest.mark.parametrize(
+    "cls", 
+    [
+        LogisticRegression, 
+        RidgeRegression, 
+        GroupMeanEqualisingRegression,   
+    ]
+)
+class TestPredictProba():
+    """Tests for the predict_proba method on model classes."""
+
+    def setup_class(self):
+        """Load data to build models on."""
+
+        adult = ad.data.get_data()
+        self.X, self.y = ad.data.data_to_np(adult)
+
+
+    def test_return_shape(self, cls):
+        """Test return value is the correct shape."""
+
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = True)
+
+        model.fit(self.X, self.y)
+
+        predictions = model.predict_proba(self.X)
+
+        assert predictions.shape == (self.X.shape[0], 1), 'Incorrect shape for predict_proba output'
+
+
+
+
+
+
+
