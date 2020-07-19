@@ -35,18 +35,21 @@ def test_class_inheritance(cls):
     assert isinstance(obj, LogisticRegression)
 
 
+
 @pytest.mark.parametrize(
-    "cls,name", 
+    "cls", 
     [
-        (LogisticRegression, 'fit'), 
-        (RidgeRegression, 'fit'), 
-        (GroupMeanEqualisingRegression, 'fit'),
-        (LogisticRegression, 'cost_function'), 
-        (RidgeRegression, 'cost_function'), 
-        (GroupMeanEqualisingRegression, 'cost_function'),     
-        (LogisticRegression, 'gradient'), 
-        (RidgeRegression, 'gradient'), 
-        (GroupMeanEqualisingRegression, 'gradient')        
+        LogisticRegression,
+        RidgeRegression,
+        GroupMeanEqualisingRegression    
+    ]
+)
+@pytest.mark.parametrize(
+    "name", 
+    [
+        'fit',
+        'cost_function',
+        'gradient'        
     ]
 )
 def test_class_methods(cls, name):
