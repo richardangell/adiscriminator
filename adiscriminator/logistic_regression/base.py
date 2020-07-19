@@ -92,12 +92,13 @@ class LogisticRegression():
 
             if self.fit_intercept:
 
-                # calculate non standardised intercept term; 
-                # beta_0 - sum((beta_i * m_i)/ s_i) for i in (1, n) where...
-                # beta_0 is the standardised intercept
-                # beta_i is the ith standardised coefficient
-                # m_i is the mean for the ith variable, used for standardisation
-                # s_i is the sd for the ith variable, used for standardisation
+                # formula for non standardised intercept term; 
+                # b'0 = b0 - sum j [xbarj * bj / sj]
+                # b'0 is the non standardised intercept
+                # b0 is the standardised intercept
+                # bj is the jth standardised coefficient
+                # sj is the std for the jth variable
+                # xbarj is the mean for jth variable
                 non_std_intercept = self.optimisation_results['x'][0] - \
                     sum((np.array(self.optimisation_results['x'][1:]) * np.array(self.scaler.mean_)) / np.array(self.scaler.scale_))
 
