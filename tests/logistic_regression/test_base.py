@@ -7,10 +7,39 @@ from pytest_mock import mocker
 from numpy.testing import assert_array_equal
 
 import adiscriminator as ad
+from adiscriminator.logistic_regression.base import LogisticRegression
+from adiscriminator.logistic_regression.ridge import RidgeRegression
+from adiscriminator.logistic_regression.fair import GroupMeanEqualisingRegression
 
 
 
-class TestFit(object):
+def initialise_model(cls, standardise, fit_intercept):
+    """Function to initialise classes from logisitic_regression module."""
+
+    if cls is GroupMeanEqualisingRegression:
+
+        # create random group as we're not interested in learnt model values in this script
+        np.random.seed(1)
+        random_group = (np.random.rand(32560) > 0.5).astype(int)
+
+        obj = cls(group = random_group, standardise = standardise, fit_intercept = fit_intercept)
+
+    else:
+
+        obj = cls(standardise = standardise, fit_intercept = fit_intercept)
+
+    return obj
+
+
+@pytest.mark.parametrize(
+    "cls", 
+    [
+        LogisticRegression, 
+        RidgeRegression, 
+        GroupMeanEqualisingRegression,   
+    ]
+)
+class TestFit():
     """Tests for the fit method."""
 
     def setup_class(self):
@@ -20,10 +49,10 @@ class TestFit(object):
         self.X, self.y = ad.data.data_to_np(adult)
 
 
-    def test_data_standardised_no_intercept(self, mocker):
+    def test_data_standardised_no_intercept(self, cls, mocker):
         """Test that X is standardised if standardise is True, without an intercept fit."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = True, fit_intercept = False)
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = False)
 
         scaled_X = StandardScaler().fit_transform(self.X)
 
@@ -42,10 +71,10 @@ class TestFit(object):
         assert_array_equal(call_X, scaled_X)
 
 
-    def test_data_standardised_with_intercept(self, mocker):
+    def test_data_standardised_with_intercept(self, cls, mocker):
         """Test that X is standardised if standardise is True, with an intercept fit."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = True, fit_intercept = True)
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = True)
 
         scaled_X = StandardScaler().fit_transform(self.X)
 
@@ -67,10 +96,10 @@ class TestFit(object):
         assert_array_equal(call_X_without_intercept, scaled_X)
 
 
-    def test_X_no_intercept(self, mocker):
+    def test_X_no_intercept(self, cls, mocker):
         """Test X used in fitting is expected if fit_intercept is False."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = False, fit_intercept = False)
+        model = initialise_model(cls = cls, standardise = False, fit_intercept = False)
 
         spy = mocker.spy(scipy.optimize, 'minimize')
 
@@ -85,10 +114,10 @@ class TestFit(object):
         assert_array_equal(call_X, self.X)
 
 
-    def test_X_with_intercept(self, mocker):
+    def test_X_with_intercept(self, cls, mocker):
         """Test X used in fitting is expected if fit_intercept is True."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = False, fit_intercept = True)
+        model = initialise_model(cls = cls, standardise = False, fit_intercept = True)
 
         spy = mocker.spy(scipy.optimize, 'minimize')
 
@@ -109,12 +138,12 @@ class TestFit(object):
         assert_array_equal(call_X[:, 0], np.ones((self.X.shape[0],)))
 
 
-    def test_scipy_minimise_call(self, mocker):
+    def test_scipy_minimise_call(self, cls, mocker):
         """Test scipy.optimize.minimize is called with correct args (excluding X) and correct # times."""
 
         spy = mocker.spy(scipy.optimize, 'minimize')
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = False, fit_intercept = False)
+        model = initialise_model(cls = cls, standardise = False, fit_intercept = False)
 
         model.fit(self.X, self.y)
 
@@ -151,10 +180,10 @@ class TestFit(object):
             (False, ['name', 'coef'])
         ]
     )
-    def test_coefficient_table_columns(self, standardise, expected_cols):
+    def test_coefficient_table_columns(self, cls, standardise, expected_cols):
         """Test that the model coefficients table has the correct columns."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = standardise, fit_intercept = True)
+        model = initialise_model(cls = cls, standardise = standardise, fit_intercept = True)
 
         model.fit(self.X, self.y)
 
@@ -169,10 +198,10 @@ class TestFit(object):
             (False, 0)
         ]
     )
-    def test_number_coefficients(self, fit_intercept, expected_additional_coefficients):
+    def test_number_coefficients(self, cls, fit_intercept, expected_additional_coefficients):
         """Test that the model coefficients table has the correct columns."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = False, fit_intercept = fit_intercept)
+        model = initialise_model(cls = cls, standardise = False, fit_intercept = fit_intercept)
 
         model.fit(self.X, self.y)
 
@@ -186,10 +215,10 @@ class TestFit(object):
             False
         ]
     )
-    def test_intercept_coefficient_in_table(self, standardise):
+    def test_intercept_coefficient_in_table(self, cls, standardise):
         """Test the intercept coefficient appears in the first row of the intercept table, fit_intercept is True."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = standardise, fit_intercept = True)
+        model = initialise_model(cls = cls, standardise = standardise, fit_intercept = True)
 
         model.fit(self.X, self.y)
 
@@ -197,10 +226,10 @@ class TestFit(object):
             f'Intercept term not in coefficients table when standardise = {standardise}'
 
 
-    def test_standardised_coefficient_values_with_intercept(self):
+    def test_standardised_coefficient_values_with_intercept(self, cls):
         """Test standardised coefficient values are calculated correctly."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = True, fit_intercept = True)
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = True)
 
         model.fit(self.X, self.y)
 
@@ -230,10 +259,10 @@ class TestFit(object):
             f'Incorrect standardised beta0 value'
 
 
-    def test_standardised_coefficient_values(self):
+    def test_standardised_coefficient_values(self, cls):
         """Test standardised coefficient values are calculated correctly."""
 
-        model = ad.logistic_regression.base.LogisticRegression(standardise = True, fit_intercept = False)
+        model = initialise_model(cls = cls, standardise = True, fit_intercept = False)
 
         model.fit(self.X, self.y)
 
