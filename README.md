@@ -1,6 +1,6 @@
 # adiscriminator
 
-Trying to get logistic regression to not discriminate over certain variables
+Experiments in trying to get logistic regression to not discriminate over certain variables
 
 ----
 
